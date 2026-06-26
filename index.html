@@ -20,7 +20,7 @@
 <body>
   <div id="app" class="relative max-w-md mx-auto bg-[#FAF7F2] min-h-screen shadow-lg overflow-hidden">
     
-    <!-- 頁首 Banner 區塊 (替換為您指定的 image_e3fe59.png) -->
+    <!-- 頁首 Banner 區塊 -->
     <div class="relative h-[300px] overflow-hidden bg-[#E2D5C3]">
       <div class="absolute inset-0" style="background-image: url('image_e3fe59.png'); background-size: cover; background-position: center; background-repeat: no-repeat;"></div>
       
@@ -34,7 +34,6 @@
       
       <!-- 右下角浮動 Tab 按鈕 -->
       <div class="absolute bottom-8 right-4 flex space-x-3 z-10">
-        <!-- 啟動按鈕改為夕陽橘 #D66B44 -->
         <button v-for="(tab, index) in tabs" :key="index" @click="activeTab = tab.id" 
                 :class="activeTab === tab.id ? 'bg-[#D66B44] text-white scale-110 shadow-lg shadow-[#D66B44]/40' : 'bg-white/90 text-gray-500'"
                 class="w-12 h-12 rounded-full shadow-md flex items-center justify-center transition-all duration-300">
@@ -80,9 +79,9 @@
             <div v-for="(item, index) in currentItinerary" :key="item.id" class="relative">
               
               <!-- 交通時間 -->
-              <div v-if="index > 0" class="flex items-center justify-center h-8 text-[#5C8065] text-xs my-1 font-medium">
+              <div v-if="index > 0 && item.transportTime && item.transportTime !== '0'" class="flex items-center justify-center h-8 text-[#5C8065] text-xs my-1 font-medium">
                 <div class="w-px h-full bg-[#5C8065]/30 mr-2"></div>
-                <i :class="item.transportIcon" class="mr-1"></i> 約 {{ item.transportTime }} 分鐘
+                <i :class="item.transportIcon || 'fas fa-subway'" class="mr-1"></i> 約 {{ item.transportTime }} 分鐘
               </div>
 
               <!-- 卡片本體 -->
@@ -156,7 +155,7 @@
                 </div>
               </div>
             </div>
-            <div class="text-xs text-gray-400 mt-3 pt-3 border-t border-gray-100"><i class="fas fa-users mr-1"></i>出行人: Kabi, Hui Chen, Rong</div>
+            <div class="text-xs text-gray-400 mt-3 pt-3 border-t border-gray-100"><i class="fas fa-users mr-1"></i>出行人: Ren, Maggie, Angela</div>
           </div>
 
           <!-- 住宿資訊 -->
@@ -236,47 +235,56 @@
           { day: 'Sun', date: '05', full: '2026-07-05' }
         ];
 
-        // 行程資料庫：配合夕陽橘(bg-[#D66B44])與梯田綠(bg-[#5C8065])調整色碼
+        // 行程資料庫：整合上海完美避人潮版與貴州經典大縱走
         const itineraryData = {
           '2026-06-27': [
-            { id: 1, category: '航班', name: '台北 ✈️ 上海 (東方航空)', time: '15:30 - 17:30', note: 'MU5008，抵達後前往漢庭酒店', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-plane-departure', mapQuery: '上海浦東機場' },
-            { id: 2, category: '住宿', name: '漢庭酒店(豫園小南門)', time: '19:00 Check-in', note: '上海市黃浦區金壇路30號。晚上可逛外灘。', colorCode: 'bg-[#D66B44]', categoryIcon: 'fas fa-bed', transportIcon: 'fas fa-subway', transportTime: '60', mapQuery: '上海漢庭酒店豫園小南門' }
+            { id: 1, category: '航班', name: '台北 ✈️ 上海 (東方航空)', time: '15:30 - 17:30', note: 'MU5008 (T2-T1)，抵達後不搭計程車以免傍晚塞車，準備直奔地鐵站！', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-plane-departure', mapQuery: '上海浦東國際機場' },
+            { id: 2, category: '住宿', name: '桔子水晶上海外灘豫園酒店', time: '19:30 - 20:00 Check-in', note: '黃浦區人民路399號。機場搭地鐵2號線到南京東路站，轉10號線1站至「豫園站」7號出口即達。', colorCode: 'bg-[#D66B44]', categoryIcon: 'fas fa-bed', transportIcon: 'fas fa-subway', transportTime: '70', mapQuery: '桔子水晶上海外灘豫園酒店' },
+            { id: 3, category: '晚餐', name: '飯店周邊人民路小館', time: '20:00 - 20:45', note: '簡單吃道地本幫菜或麵點，避開商圈排隊人群。', colorCode: 'bg-[#E5B55C]', categoryIcon: 'fas fa-utensils', transportIcon: 'fas fa-walking', transportTime: '5', mapQuery: '桔子水晶上海外灘豫園酒店' },
+            { id: 4, category: '景點', name: '豫園商城看璀璨夜燈', time: '20:45 - 21:30', note: '散步3分鐘進景區，燈火輝煌極具張力。若 Maggie 和 Angela 累了，隨時可以秒撤退回房間休息！', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-camera', transportIcon: 'fas fa-walking', transportTime: '3', mapQuery: '豫園商城' }
           ],
           '2026-06-28': [
-            { id: 3, category: '自由行', name: '上海市區漫遊', time: '全天', note: '建議景點：陸家嘴、南京路步行街或武康路', colorCode: 'bg-[#E5B55C]', categoryIcon: 'fas fa-city', transportIcon: 'fas fa-walking', transportTime: '0', mapQuery: '上海外灘' }
+            { id: 5, category: '景點', name: '晨光外灘散步', time: '07:00 - 08:30', note: '早起無人空景包場！光線柔和最適合幫 Maggie 和 Angela 拍出沒有路人的百萬大片。', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-camera', transportIcon: 'fas fa-walking', transportTime: '10', mapQuery: '上海外灘' },
+            { id: 6, category: '景點', name: '武康大樓與法租界優雅漫步', time: '09:00 - 10:30', note: '搭地鐵10號線至交通大學站。梧桐樹蔭與歷史洋房交織，趁早晨避開下午可怕的網紅打卡大軍。', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-tree', transportIcon: 'fas fa-subway', transportTime: '20', mapQuery: '武康大樓' },
+            { id: 7, category: '早午餐', name: '滬西老弄堂麵館 (定西路店)', time: '10:30 - 11:30', note: '10:00開門，搶在中午尖峰前免排隊開吃！激推蛤蜊豬肝麵與炸豬排配辣醬油。', colorCode: 'bg-[#E5B55C]', categoryIcon: 'fas fa-utensils', transportIcon: 'fas fa-taxi', transportTime: '10', mapQuery: '滬西老弄堂麵館定西路店' },
+            { id: 8, category: '休息', name: '返回桔子水晶飯店午休', time: '12:00 - 14:00', note: '防暑大絕招！避開正中午烈日高溫，回房吹冷氣、睡個午覺補滿體力。', colorCode: 'bg-[#D66B44]', categoryIcon: 'fas fa-bed', transportIcon: 'fas fa-subway', transportTime: '25', mapQuery: '桔子水晶上海外灘豫園酒店' },
+            { id: 9, category: '景點', name: '豫園園林內部 & 城隍廟深度遊', time: '14:30 - 16:30', note: '下樓直接參觀江南古典造景園林（豫園16:00停止售票），拍照打卡極佳。', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-synagogue', transportIcon: 'fas fa-walking', transportTime: '3', mapQuery: '豫園' },
+            { id: 10, category: '景點', name: '上海中心大廈 52 樓朵雲書院', time: '18:00 - 19:15', note: '⚠️需提前於微信預約。點杯咖啡低消在冷氣房靠窗「好望角」卡位，一次收齊黃浦江夕陽與 19:00 城市瞬間點燈震撼畫面。', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-book-open', transportIcon: 'fas fa-subway', transportTime: '25', mapQuery: '上海中心大廈' },
+            { id: 11, category: '交通', name: '黃浦江公共渡輪 (東金線) 體驗', time: '19:30 - 20:00', note: '從東昌路渡口花 2 元刷手機上二樓戶外甲板，迎著溫暖江風近距離看全亮夜景橫渡回浦西。', colorCode: 'bg-[#8CA894]', categoryIcon: 'fas fa-ship', transportIcon: 'fas fa-walking', transportTime: '10', mapQuery: '東昌路渡口' },
+            { id: 12, category: '晚餐', name: '外灘夜漫步 & 豫園宵夜點心', time: '20:00 之後', note: '金陵東路渡口下船即外灘，漫步走回豫園商圈吃南翔小籠包當完美夜間結尾。', colorCode: 'bg-[#E5B55C]', categoryIcon: 'fas fa-utensils', transportIcon: 'fas fa-walking', transportTime: '5', mapQuery: '外灘金陵東路渡口' }
           ],
           '2026-06-29': [
-            { id: 4, category: '航班', name: '上海 ✈️ 貴陽 (東方航空)', time: '12:05 - 14:40', note: 'MU6391，前往避暑之都', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-plane', transportIcon: 'fas fa-subway', transportTime: '60', mapQuery: '上海機場' },
-            { id: 5, category: '住宿', name: '貴陽噴水池桔子水晶飯店', time: '15:30 Check-in', note: '雲岩區延安東路18號。晚上逛噴水池吃酸湯牛肉。', colorCode: 'bg-[#D66B44]', categoryIcon: 'fas fa-bed', transportIcon: 'fas fa-car', transportTime: '40', mapQuery: '貴陽噴水池桔子水晶酒店' }
+            { id: 13, category: '航班', name: '上海 ✈️ 貴陽 (東方航空)', time: '12:05 - 14:40', note: 'MU6391，注意起飛機場是上海虹橋(SHA) T2，抵達避暑之都貴陽(KWE)。', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-plane', transportIcon: 'fas fa-subway', transportTime: '45', mapQuery: '上海虹橋國際機場' },
+            { id: 14, category: '住宿', name: '貴陽噴水池桔子水晶飯店', time: '15:30 Check-in', note: '雲岩區延安東路18號。晚上去周邊逛噴水池、吃特色酸湯牛肉。', colorCode: 'bg-[#D66B44]', categoryIcon: 'fas fa-bed', transportIcon: 'fas fa-car', transportTime: '40', mapQuery: '貴陽噴水池桔子水晶酒店' }
           ],
           '2026-06-30': [
-            { id: 6, category: '集合', name: '旅遊集散中心出發', time: '09:00', note: '延安西路32號，搭車前往黃果樹', colorCode: 'bg-[#E5B55C]', categoryIcon: 'fas fa-flag', transportIcon: 'fas fa-car', transportTime: '15', mapQuery: '貴陽延安西路32號' },
-            { id: 7, category: '景點', name: '天星橋 & 銀鏈墜潭', time: '11:00 - 13:00', note: '注意地面濕滑，請穿防滑鞋', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-camera', transportIcon: 'fas fa-bus', transportTime: '120', mapQuery: '黃果樹天星橋' },
-            { id: 8, category: '景點', name: '黃果樹大瀑布', time: '14:00 - 16:00', note: '可視 Rong 和家人的體力現場自費購買大扶梯', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-water', transportIcon: 'fas fa-walking', transportTime: '20', mapQuery: '黃果樹大瀑布' },
-            { id: 9, category: '景點', name: '陡坡塘瀑布', time: '16:00 - 17:00', note: '西遊記片尾曲取景地', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-camera', transportIcon: 'fas fa-walking', transportTime: '15', mapQuery: '陡坡塘瀑布' },
-            { id: 10, category: '其他', name: '返回貴陽解散', time: '20:00', note: '返回延安西路，續住桔子水晶', colorCode: 'bg-[#8CA894]', categoryIcon: 'fas fa-bus', transportIcon: 'fas fa-bus', transportTime: '120', mapQuery: '貴陽延安西路32號' }
+            { id: 15, category: '集合', name: '旅遊集散中心出發', time: '09:00', note: '延安西路32號，搭車前往國家5A級黃果樹瀑布', colorCode: 'bg-[#E5B55C]', categoryIcon: 'fas fa-flag', transportIcon: 'fas fa-car', transportTime: '15', mapQuery: '貴陽延安西路32號' },
+            { id: 16, category: '景點', name: '天星橋 & 銀鏈墜潭', time: '11:00 - 13:00', note: '路面多水濕滑，記得提醒 Maggie 和 Angela 穿防滑好走的鞋。', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-camera', transportIcon: 'fas fa-bus', transportTime: '120', mapQuery: '黃果樹天星橋' },
+            { id: 17, category: '景點', name: '黃果樹大瀑布', time: '14:00 - 16:00', note: '極度壯觀！可視家人體力，現場自費購買大扶梯省力。', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-water', transportIcon: 'fas fa-walking', transportTime: '20', mapQuery: '黃果樹大瀑布' },
+            { id: 18, category: '景點', name: '陡坡塘瀑布', time: '16:00 - 17:00', note: '西遊記片尾曲唐僧師徒走過的地方。', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-camera', transportIcon: 'fas fa-walking', transportTime: '15', mapQuery: '陡坡塘瀑布' },
+            { id: 19, category: '其他', name: '返回貴陽解散', time: '20:00', note: '返回延安西路，續住貴陽噴水池桔子水晶，好好休息。', colorCode: 'bg-[#8CA894]', categoryIcon: 'fas fa-bus', transportIcon: 'fas fa-bus', transportTime: '120', mapQuery: '貴陽延安西路32號' }
           ],
           '2026-07-01': [
-            { id: 11, category: '自由行', name: '貴陽市區緩衝日', time: '全天', note: '睡到自然醒，調養體力。可逛甲秀樓或黔靈山。晚上打包大行李。', colorCode: 'bg-[#E5B55C]', categoryIcon: 'fas fa-coffee', transportIcon: 'fas fa-walking', transportTime: '0', mapQuery: '甲秀樓' }
+            { id: 20, category: '自由行', name: '貴陽市區緩衝調整日', time: '全天', note: '睡到自然醒。這天不趕行程，調養體力。下午可輕鬆逛市區甲秀樓或黔靈山看猴子。晚上打包大行李。', colorCode: 'bg-[#E5B55C]', categoryIcon: 'fas fa-coffee', transportIcon: 'fas fa-walking', transportTime: '0', mapQuery: '甲秀樓' }
           ],
           '2026-07-02': [
-            { id: 12, category: '集合', name: '前往花果園維也納集合', time: '06:30', note: '請於06:00前從桔子水晶退房叫車', colorCode: 'bg-[#E5B55C]', categoryIcon: 'fas fa-flag', transportIcon: 'fas fa-car', transportTime: '20', mapQuery: '貴陽花果園維也納酒店' },
-            { id: 13, category: '景點', name: '荔波小七孔景區', time: '中午抵達', note: '遊覽臥龍潭、水上森林、拉雅瀑布 (觀光車單向運行勿坐過頭)', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-tree', transportIcon: 'fas fa-bus', transportTime: '180', mapQuery: '荔波小七孔' },
-            { id: 14, category: '住宿', name: '西江千戶苗寨 (景區內)', time: '晚上', note: '入住觀景客棧，欣賞萬家燈火夜景', colorCode: 'bg-[#D66B44]', categoryIcon: 'fas fa-bed', transportIcon: 'fas fa-bus', transportTime: '150', mapQuery: '西江千戶苗寨' }
+            { id: 21, category: '集合', name: '前往花果園維也納集合', time: '06:30', note: '請於06:00前從桔子水晶退房叫車出發。', colorCode: 'bg-[#E5B55C]', categoryIcon: 'fas fa-flag', transportIcon: 'fas fa-car', transportTime: '20', mapQuery: '貴陽花果園維也納酒店' },
+            { id: 22, category: '景點', name: '荔波小七孔景區', time: '中午抵達', note: '山水美如翡翠。遊覽臥龍潭、水上森林、拉雅瀑布 (觀光車單向運行勿坐過頭)。', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-tree', transportIcon: 'fas fa-bus', transportTime: '180', mapQuery: '荔波小七孔' },
+            { id: 23, category: '住宿', name: '西江千戶苗寨 (景區內)', time: '晚上', note: '入住特色觀景客棧，夜晚帶 Maggie 與 Angela 登觀景台俯瞰萬家燈火夢幻夜景。', colorCode: 'bg-[#D66B44]', categoryIcon: 'fas fa-bed', transportIcon: 'fas fa-bus', transportTime: '150', mapQuery: '西江千戶苗寨' }
           ],
           '2026-07-03': [
-            { id: 15, category: '景點', name: '遊覽苗寨 & 長桌宴', time: '上午 - 中午', note: '百年吊腳樓、觀景台，中午享用苗寨長桌宴', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-utensils', transportIcon: 'fas fa-walking', transportTime: '0', mapQuery: '西江千戶苗寨' },
-            { id: 16, category: '住宿', name: '鎮遠古城', time: '15:00 出發', note: '入住古城觀景客棧，晚上自由欣賞舞陽河夜景與烤魚大排檔', colorCode: 'bg-[#D66B44]', categoryIcon: 'fas fa-bed', transportIcon: 'fas fa-bus', transportTime: '120', mapQuery: '鎮遠古城' }
+            { id: 24, category: '景點', name: '遊覽苗寨 & 體驗長桌宴', time: '上午 - 中午', note: '欣賞特色百年吊腳樓，中午享用熱鬧的苗寨特色長桌宴。', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-utensils', transportIcon: 'fas fa-walking', transportTime: '0', mapQuery: '西江千戶苗寨' },
+            { id: 25, category: '住宿', name: '鎮遠古城', time: '15:00 出發', note: '入住古城觀景客棧，晚上自由欣賞舞陽河夜景，品嚐烤魚大排檔。', colorCode: 'bg-[#D66B44]', categoryIcon: 'fas fa-bed', transportIcon: 'fas fa-bus', transportTime: '120', mapQuery: '鎮遠古城' }
           ],
           '2026-07-04': [
-            { id: 17, category: '景點', name: '梵淨山登頂', time: '清晨出發', note: '搭纜車遊蘑菇石，視體力攀登紅雲金頂/老金頂', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-mountain', transportIcon: 'fas fa-bus', transportTime: '120', mapQuery: '梵淨山' },
-            { id: 18, category: '其他', name: '返回貴陽解散', time: '20:00 左右', note: '花果園維也納酒店解散', colorCode: 'bg-[#8CA894]', categoryIcon: 'fas fa-bus', transportIcon: 'fas fa-bus', transportTime: '240', mapQuery: '貴陽花果園' },
-            { id: 19, category: '住宿', name: '7天酒店 (甲秀樓店)', time: '晚上入住', note: '中華南路149號。下樓吃民生路好吃街。⚠️睡前務必預約明早04:55送機專車！', colorCode: 'bg-[#D66B44]', categoryIcon: 'fas fa-bed', transportIcon: 'fas fa-car', transportTime: '15', mapQuery: '貴陽7天酒店甲秀樓民生路好吃街店' }
+            { id: 26, category: '景點', name: '天空之城：梵淨山登頂', time: '清晨出發', note: '搭乘纜車遊蘑菇石，視 Maggie 與 Angela 的體力攀登紅雲金頂。', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-mountain', transportIcon: 'fas fa-bus', transportTime: '120', mapQuery: '梵淨山' },
+            { id: 27, category: '其他', name: '返回貴陽解散', time: '20:00 左右', note: '花果園維也納酒店解散。', colorCode: 'bg-[#8CA894]', categoryIcon: 'fas fa-bus', transportIcon: 'fas fa-bus', transportTime: '240', mapQuery: '貴陽花果園' },
+            { id: 28, category: '住宿', name: '7天酒店 (甲秀樓民生路店)', time: '晚上入住', note: '中華南路149號。下樓就能去民生路好吃街補刀在地美食！⚠️明早極早，睡前務必調好04:55送機專車！', colorCode: 'bg-[#D66B44]', categoryIcon: 'fas fa-bed', transportIcon: 'fas fa-car', transportTime: '15', mapQuery: '貴陽7天酒店甲秀樓民生路好吃街店' }
           ],
           '2026-07-05': [
-            { id: 20, category: '交通', name: '出發前往機場', time: '04:50', note: '搭乘預約車輛前往龍洞堡機場', colorCode: 'bg-[#E5B55C]', categoryIcon: 'fas fa-car', transportIcon: 'fas fa-car', transportTime: '20', mapQuery: '貴陽龍洞堡機場' },
-            { id: 21, category: '航班', name: '貴陽 ✈️ 上海 (上海航空)', time: '07:15 - 09:50', note: 'FM9460/MU8510，辦理中轉', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-plane', transportIcon: 'fas fa-walking', transportTime: '0', mapQuery: '上海機場' },
-            { id: 22, category: '航班', name: '上海 ✈️ 台北 (東方航空)', time: '12:20 - 14:25', note: 'MU5007，平安返家！', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-home', transportIcon: 'fas fa-plane', transportTime: '150', mapQuery: '桃園機場' }
+            { id: 29, category: '交通', name: '前往機場送機', time: '04:50', note: '搭乘夜間預約車輛準時出發前往龍洞堡機場。', colorCode: 'bg-[#E5B55C]', categoryIcon: 'fas fa-car', transportIcon: 'fas fa-car', transportTime: '20', mapQuery: '貴陽龍洞堡機場' },
+            { id: 30, category: '航班', name: '貴陽 ✈️ 上海 (上海航空)', time: '07:15 - 09:50', note: 'FM9460，抵達浦東(PVG) T1，準備辦理中轉回台。', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-plane', transportIcon: 'fas fa-walking', transportTime: '0', mapQuery: '上海浦東國際機場' },
+            { id: 31, category: '航班', name: '上海 ✈️ 台北 (東方航空)', time: '12:20 - 14:25', note: 'MU5007 (PVG T1 - TPE T2)，順利平安返台，到家吃大餐！', colorCode: 'bg-[#5C8065]', categoryIcon: 'fas fa-home', transportIcon: 'fas fa-plane', transportTime: '150', mapQuery: '桃園國際機場' }
           ]
         };
 
@@ -290,7 +298,7 @@
         ];
 
         const hotels = [
-          { name: '漢庭酒店 (豫園小南門店)', address: '上海市黃浦區金壇路30號' },
+          { name: '桔子水晶上海外灘豫園酒店', address: '上海市黃浦區人民路399號' },
           { name: '貴陽噴水池桔子水晶飯店', address: '貴陽市雲岩區延安東路18號' },
           { name: '西江千戶苗寨 (景區內客棧)', address: '貴州省雷山縣西江千戶苗寨景區內' },
           { name: '鎮遠古城 (景區內客棧)', address: '貴州省鎮遠縣鎮遠古城內' },
